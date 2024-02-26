@@ -125,26 +125,64 @@
     }
   }
 
-  // Função para enviar imagem para o servidor
-  async function sendImageToServer(imageData, title) {
-    try {
-      ('https://seu-app-backend.glitch.me/api/upload', {
-        method: 'POST',
-        body: JSON.stringify({ image: imageData, title }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      const data = await response.json();
-      console.log('Imagem enviada para o servidor:', data.imageUrl);
+ // Função para enviar imagem para o servidor
+async function sendImageToServer(imageData, title) {
+  try {
+    const response = await fetch('https://seu-app-backend.glitch.me/api/upload', {
+      method: 'POST',
+      body: JSON.stringify({ image: imageData, title }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    const data = await response.json();
+    console.log('Imagem enviada para o servidor:', data.imageUrl);
 
-      // Atualize a lista de imagens na página de desenvolvedores
-      displayImages();
-    } catch (error) {
-      console.error('Erro ao enviar imagem para o servidor:', error);
-    }
+    // Adicione aqui lógica adicional, se necessário, após enviar com sucesso
+
+  } catch (error) {
+    console.error('Erro ao enviar imagem para o servidor:', error);
+    // Adicione aqui lógica de tratamento de erro, se necessário
   }
-  
+}
+
+// ...
+
+// Evento de clique no botão de captura de tela
+btnScreenshot.addEventListener("mousedown", async function () {
+  const img = document.createElement("img");
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext("2d").drawImage(video, 0, 0);
+
+  // Obtendo o título da imagem do campo de entrada de texto
+  const title = titleInput.value.trim() || "screenshot";
+
+  // Convertendo a imagem para base64 e exibindo
+  img.src = canvas.toDataURL("image/jpeg");
+
+  // Crie um botão de enviar
+  const sendButton = document.createElement("button");
+  sendButton.classList.add("button", "is-primary");
+  sendButton.textContent = "Enviar";
+
+  // Lógica para enviar a imagem ao backend ao clicar no botão de enviar
+  sendButton.onclick = async function () {
+    // Chamando a função para enviar a imagem para o backend
+    await sendImageToServer(img.src, title);
+
+    // Adicione um alerta ou outra lógica após o envio bem-sucedido
+    alert("Imagem enviada com sucesso!");
+
+    // Limpar a lista de imagens (se necessário)
+    screenshotsContainer.innerHTML = "";
+  };
+
+  // Adicione o botão de enviar à página
+  screenshotsContainer.innerHTML = "";
+  screenshotsContainer.appendChild(img);
+  screenshotsContainer.appendChild(sendButton);
+});
   initializeCamera();
 })();
 
