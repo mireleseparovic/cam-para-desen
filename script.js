@@ -167,10 +167,10 @@ btnScreenshot.addEventListener("mousedown", async function () {
     formData.append('title', title);
 
     // Enviar a imagem usando fetch com FormData
-    const response = await fetch('https://pag-de-desen.vercel.app/api/upload', {
-      method: 'POST',
-      body: formData,
-    });
+   const response = await fetch('https://pag-de-desen.vercel.app/', {
+   method: 'POST',
+   body: formData,
+   });
 
   // Crie um botão de enviar
   const sendButton = document.createElement("button");
