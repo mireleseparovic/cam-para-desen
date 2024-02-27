@@ -130,9 +130,9 @@ async function sendImageToServer(imageData, title) {
   try {
       const response = await fetch('https://pag-de-desen.vercel.app/api/upload', {  
       method: 'POST',
-      body: JSON.stringify({ image: imageData, title }),
+      body: imageData,
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'image/jpeg'
       }
     });
     const data = await response.json();
