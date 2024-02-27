@@ -161,6 +161,17 @@ btnScreenshot.addEventListener("mousedown", async function () {
   // Convertendo a imagem para base64 e exibindo
   img.src = canvas.toDataURL("image/jpeg");
 
+  // Criar um FormData para enviar a imagem como um formulário
+    const formData = new FormData();
+    formData.append('image', img.src);
+    formData.append('title', title);
+
+    // Enviar a imagem usando fetch com FormData
+    const response = await fetch('https://pag-de-desen.vercel.app/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
   // Crie um botão de enviar
   const sendButton = document.createElement("button");
   sendButton.classList.add("button", "is-primary");
