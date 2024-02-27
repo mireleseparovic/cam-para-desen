@@ -128,7 +128,7 @@
  // Função para enviar imagem para o servidor
 async function sendImageToServer(imageData, title) {
   try {
-      const response = await fetch('https://pag-de-desen.vercel.app/', {  
+      const response = await fetch('https://pag-de-desen.vercel.app/api/upload', {  
       method: 'POST',
       body: JSON.stringify({ image: imageData, title }),
       headers: {
