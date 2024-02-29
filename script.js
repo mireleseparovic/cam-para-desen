@@ -1,6 +1,6 @@
 (function () {
   if (!("mediaDevices" in navigator) || !("getUserMedia" in navigator.mediaDevices)) {
-    alert("A API da câmera não está disponível no seu navegador");
+    alert("Camera API is not available in your browser");
     return;
   }
 
@@ -13,7 +13,7 @@
   const screenshotsContainer = document.querySelector("#screenshots");
   const canvas = document.querySelector("#canvas");
   const devicesSelect = document.querySelector("#devicesSelect");
-  const titleInput = document.querySelector("#titleInput");
+  const titleInput = document.querySelector("#titleInput"); // Novo campo de entrada de texto
 
   // video constraints
   const constraints = {
@@ -31,13 +31,13 @@
     },
   };
 
-  // usar câmera frontal
+  // use front face camera
   let useFrontCamera = true;
 
-  // fluxo de vídeo atual
+  // current video stream
   let videoStream;
 
-  // lidar com eventos
+  // handle events
   // play
   btnPlay.addEventListener("click", function () {
     video.play();
@@ -52,8 +52,8 @@
     btnPlay.classList.remove("is-hidden");
   });
 
-  // tirar captura de tela
-  btnScreenshot.addEventListener("mousedown", async function () {
+  // take screenshot
+  btnScreenshot.addEventListener("mousedown", function () {
     const img = document.createElement("img");
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -63,47 +63,33 @@
     const title = titleInput.value.trim() || "screenshot";
 
     // Convertendo a imagem para base64 e exibindo
+   
     img.src = canvas.toDataURL("image/jpeg");
-
-    // Ao invés de criar um botão de dowload, crie um botão de enviar
-    const sendButton = document.createElement("button");
-    sendButton.classList.add("button", "is-primary");
-    sendButton.textContent = "Enviar";
-    sendButton.onclick = async function () {
-
-      // Converta a imagem para base64
-      const img = document.createElement("img");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      canvas.getContext("2d").drawImage(video, 0, 0);
-      img.src = canvas.toDataURL("image/jpeg");
-
-      // Obtendo o título da imagem do campo de entrada de texto
-      const title = titleInput.value.trim() || "screenshot";
-
-      // Adicione a lógica para enviar a imagem e o título para outra página
-      await sendImageToServer(img.src, title);
-
-      // Adicione um alerta ou outra lógica após o envio bem-sucedido
-      alert("Imagem enviada com sucesso!");
-
-      // Limpar a lista de imagens
-      screenshotsContainer.innerHTML = "";
-    };
-
-    // Adicione o botão de enviar à página
-    screenshotsContainer.innerHTML = "";
-    screenshotsContainer.appendChild(img);
-    screenshotsContainer.appendChild(sendButton);
+    
+    // Criando um botão para baixar e compartilhar imagem
+  const downloadButton = document.createElement("button");
+  downloadButton.classList.add("button", "is-success");
+  downloadButton.textContent = `Download/Share ${title}`;
+  downloadButton.onclick = function () {
+    // Criando um link de dowload
+    const a = document.createElement("a");
+    a.href = img.src;
+    a.download = `${title}.jpg`;
+    a.click();
+  };
+   // Adicionando a imagem e o botão de dowload/compartilhamento à página
+  screenshotsContainer.innerHTML = "";
+   screenshotsContainer.appendChild(img);
+  screenshotsContainer.appendChild(downloadButton);
   });
 
-  // mudar de câmera
+  // switch camera
   btnChangeCamera.addEventListener("click", function () {
     useFrontCamera = !useFrontCamera;
     initializeCamera();
   });
 
-  // parar a transmissão de vídeo
+  // stop video stream
   function stopVideoStream() {
     if (videoStream) {
       videoStream.getTracks().forEach((track) => {
@@ -112,7 +98,7 @@
     }
   }
 
-  // inicializar
+  // initialize
   async function initializeCamera() {
     stopVideoStream();
     constraints.video.facingMode = useFrontCamera ? "user" : "environment";
@@ -121,80 +107,9 @@
       videoStream = await navigator.mediaDevices.getUserMedia(constraints);
       video.srcObject = videoStream;
     } catch (err) {
-      alert("Não foi possível acessar a câmera");
+      alert("Could not access the camera");
     }
   }
 
- // Função para enviar imagem para o servidor
-async function sendImageToServer(imageData, title) {
-  try {
-      const response = await fetch('https://pag-de-desen.vercel.app/api/upload', {  
-      method: 'POST',
-      body: imageData,
-      headers: {
-        'Content-Type': 'image/jpeg'
-      }
-    });
-    const data = await response.json();
-    console.log('Imagem enviada para o servidor:', data.imageUrl);
-
-    // Adicione aqui lógica adicional, se necessário, após enviar com sucesso
-
-  } catch (error) {
-    console.error('Erro ao enviar imagem para o servidor:', error);
-    // Adicione aqui lógica de tratamento de erro, se necessário
-  }
-}
-
-// ...
-
-// Evento de clique no botão de captura de tela
-btnScreenshot.addEventListener("mousedown", async function () {
-  const img = document.createElement("img");
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  canvas.getContext("2d").drawImage(video, 0, 0);
-
-  // Obtendo o título da imagem do campo de entrada de texto
-  const title = titleInput.value.trim() || "screenshot";
-
-  // Convertendo a imagem para base64 e exibindo
-  img.src = canvas.toDataURL("image/jpeg");
-
-  // Criar um FormData para enviar a imagem como um formulário
-    const formData = new FormData();
-    formData.append('image', img.src);
-    formData.append('title', title);
-
-    // Enviar a imagem usando fetch com FormData
-   const response = await fetch('https://pag-de-desen.vercel.app/', {
-   method: 'POST',
-   body: formData,
-   });
-
-  // Crie um botão de enviar
-  const sendButton = document.createElement("button");
-  sendButton.classList.add("button", "is-primary");
-  sendButton.textContent = "Enviar";
-
-  // Lógica para enviar a imagem ao backend ao clicar no botão de enviar
-  sendButton.onclick = async function () {
-    // Chamando a função para enviar a imagem para o backend
-    await sendImageToServer(img.src, title);
-
-    // Adicione um alerta ou outra lógica após o envio bem-sucedido
-    alert("Imagem enviada com sucesso!");
-
-    // Limpar a lista de imagens (se necessário)
-    screenshotsContainer.innerHTML = "";
-  };
-
-  // Adicione o botão de enviar à página
-  screenshotsContainer.innerHTML = "";
-  screenshotsContainer.appendChild(img);
-  screenshotsContainer.appendChild(sendButton);
-});
   initializeCamera();
 })();
-
-
