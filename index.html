@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
   <link rel="shortcut icon" type="image/png" href="cima.png" width="1000px" height="835px"/>
+  <link rel="manifest" href="/manifest.json">
 
   
   <style>
@@ -17,43 +18,28 @@
 	  
   #btnplay,
   #btnPause,
-  #btnChangeCamera{
-  font-size: 1.0em;
+  #btnChangeCamera {
+  fot-size: 3.0em;
   padding: 0.5em 1em;
   }
   
   #btnScreenshot {
-    background-color: #FF007C;
-    border-color: #FFFF00;
-    color: #FFFF00;
-    transition: background-color 0.3s, border-color 0.3s, color 0.3s; /* Adicione esta linha para uma transição suave */
+  background-color: #FF007C;
+  border-color: #FFFF00	;
+  color: #FFFF00;
   }
 
-  #btnScreenshot:hover {
-    background-color: #FFFF00;
-    border-color: #FF007C;
-    color: #FF007C;
-    transform: scale(1.1);
-  }
   #titleInput {
   width: 100%;
   padding: 0.5em;
   box-sizing: border-box;
 	  
   }
-
-  #btnPause {
-  font-size: 1.0em;
-  padding: 0.5em 1em;
-  transition: transform 0.3s; 
-  }
-
-  #btnPause:hover {
-  transform: scale(1.1);
-  }
-
-
+  
   </style>
+  
+  
+  
   
 </head>
 
@@ -66,10 +52,10 @@
   <section class="section">
     <div class="container">
       <div class="columns">
-      <div class="column is-four-fifths">
+        <div class="column is-four-fifths">
 		<center>
 		  
-		  <input type="text" id="titleInput" placeholder="Adicionar título da imagem">
+		  <input type="text" id="titleInput" placeholder="Enter image title">
 
 		  
           <video autoplay id="video"></video>
@@ -92,7 +78,7 @@
             <span class="icon">
               <i class="fas fa-sync-alt"></i>
             </span>
-            <span> trocar de câmera</span>
+            <span>Switch camera</span>
           </button>
         </div>
         <div class="column">
@@ -105,6 +91,8 @@
 
   <canvas class="is-hidden" id="canvas"></canvas>
   <script src="script.js"></script>
+  <script src="service-worker.js"></script>
+
 
 </body>
 
